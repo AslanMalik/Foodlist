@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th = "http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <div th:insert="links.html"></div>
+
+</head>
+<body>
+
+<div th:insert="nav.html"></div>
+
+<div class="container mt-3">
+        <button class="btn mb-3" data-bs-toggle="modal" data-bs-target="#addModal" style="background-color: #007BFF; color: white" >
+            + ADD NEW
+        </button>
+    <table class="table table-bordered table-striped">
+        <thead class="table-light">
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Calories (Cal)</th>
+            <th>Amount</th>
+            <th>Price (KZT)</th>
+            <th>Manufacturer (Country)</th>
+            <th>Edit</th>
+            <th>Delete</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="f : ${food}">
+            <td th:text="${f.id}"></td>
+            <td th:text="${f.name}"></td>
+            <td th:text="${f.calories}"></td>
+            <td th:text="${f.amounts}"></td>
+            <td th:text="${f.price}"></td>
+            <td th:text="${f.manufacturer.getName()}"></td>
+            <td>
+                <button class="btn btn-sm"
+                        data-bs-toggle="modal"
+                        data-bs-target="#editModal"
+                        style="background-color: #008196;
+                        color: white"
+                >
+                    Edit
+                </button>
+            </td>
+            <td>
+                <button class="btn btn-danger btn-sm"
+                        data-bs-toggle="modal"
+                        data-bs-target="#deleteModal">
+                    Delete
+                </button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+
+<div class="modal fade" id="addModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5>Add New Food</h5>
+                <button class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+                <form action="/add" method="post">
+                    <label class="form-label">Имя :</label>
+                    <input class="form-control mb-2" placeholder="Name" name="name">
+                    <label class="form-label">Калории  :</label>
+                    <input class="form-control mb-2" placeholder="Calories" name="calories" type="number">
+                    <label class="form-label">Количество :</label>
+                    <input class="form-control mb-2" placeholder="Amount" name="amounts" type="number">
+                    <label class="form-label">Цена :</label>
+                    <input class="form-control mb-2" placeholder="Price" name="price" type="number">
+
+                    <label class="form-label">Страна :</label>
+                    <select class="form-select" name="manufacturer.id">
+                        <option selected disabled>Выберите страна</option>
+                        <option th:each="m: ${man}"
+                                th:value="${m.id}"
+                                th:text="${m.name + ' - ' + m.code}"
+                        ></option>
+                    </select>
+
+                    <button type="submit" class="btn btn-success w-100">Add Food</button>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- ================= EDIT MODAL ================= -->
+<div class="modal fade" id="editModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5>Edit Food</h5>
+                <button class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+                <form action="/update" method="post" th:each="f: ${food}">
+                    <input type="hidden" name="id" th:value="${f.id}">
+
+                    <input class="form-control mb-2" name="name" th:value="${f.name}">
+                    <input class="form-control mb-2" name="calories" th:value="${f.calories}">
+                    <input class="form-control mb-2" name="amounts" th:value="${f.amounts}">
+                    <input class="form-control mb-2" name="price" th:value="${f.price}">
+
+                    <label class="form-label">Страна :</label>
+                    <select class="form-select" name="manufacturer.id">
+                        <option selected disabled>Выберите страна</option>
+                        <option th:each="m: ${man}"
+                                th:value="${m.id}"
+                                th:text="${m.name + ' - ' + m.code}"
+                        ></option>
+                    </select>
+
+
+                    <button type="submit" class="btn btn-primary w-100">Save</button>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- ================= DELETE MODAL ================= -->
+<div class="modal fade" id="deleteModal">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5>Delete Food</h5>
+                <button class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body text-center">
+                <p>Are you sure?</p>
+                <form action="/delete" method="post" th:each="f : ${food}">
+                    <input type="hidden" name="id" th:value="${f.id}">
+                    <button type="submit" class="btn btn-danger">Yes</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
